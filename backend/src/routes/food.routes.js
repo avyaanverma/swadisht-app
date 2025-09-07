@@ -9,9 +9,17 @@ const upload = multer({
 })
 
 // POST /api/food [protected]- Create a new food item
-router.post('/', authMiddleware.authFoodPartnerMiddleware , upload.single("video"),foodController.createFood)
+router.post(
+    '/', 
+    authMiddleware.authFoodPartnerMiddleware , 
+    upload.single("video"),foodController.createFood
+)
 
 // GET /api/food [protected]- Get all food items
-router.get('/', authMiddleware.authUserMiddleware, foodController.getAllFood)
+router.get(
+    '/', 
+    authMiddleware.authUserMiddleware, 
+    foodController.getFoodItems
+)
 
 module.exports = router

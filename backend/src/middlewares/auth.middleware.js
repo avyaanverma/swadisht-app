@@ -1,4 +1,5 @@
 const foodPartnerModel = require("../models/foodpartner.model")
+const  userModel = require("../models/user.model")
 const jwt  = require("jsonwebtoken")
 
 async function authFoodPartnerMiddleware(req, res, next){
@@ -30,4 +31,33 @@ async function authFoodPartnerMiddleware(req, res, next){
     }
 }
 
-module.exports = {authFoodPartnerMiddleware}
+async function authUserMiddleware(req,res,next){
+    const token = req.cookies.token
+    
+    if(!token){
+        return res.status(400).json({
+            message: "Unauthorized access."
+        })
+    }
+
+    try{
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+        const user = await userModel.findById(decoded.id)
+
+        req.user = user
+
+        next()
+
+
+    }catch(err){
+        return res.status(400).json({
+            message: err
+        })
+    }
+}
+
+module.exports = {
+    authFoodPartnerMiddleware,
+    authUserMiddleware
+}
