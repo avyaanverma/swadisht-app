@@ -1,0 +1,23 @@
+:root {
+  --primary-color: #ff4d6d;
+  --accent-color: #3a86ff;
+  --background: #f9f9f9;
+  --text: #222;
+  --card-bg: #fff;
+  --input-bg: #f1f3f6;
+  --input-border: #e0e0e0;
+  --btn-text: #fff;
+  --link: #3a86ff;
+}
+
+[data-theme="dark"] {
+  --primary-color: #ff4d6d;
+  --accent-color: #3a86ff;
+  --background: #181a1b;
+  --text: #f9f9f9;
+  --card-bg: #23272f;
+  --input-bg: #23272f;
+  --input-border: #333;
+  --btn-text: #333;
+  --link: #3a86ff;
+}

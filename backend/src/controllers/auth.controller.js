@@ -2,6 +2,8 @@ const userModel = require("../models/user.model")
 const foodPartnerModel = require("../models/foodpartner.model")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
+
+// User controllers
 async function registerUser(req, res) {
     // yeh ek aisa route hain jaha prr humne fullName, email, and password liya hain 
     // yeh register wala api route for authentication 
@@ -9,7 +11,7 @@ async function registerUser(req, res) {
     // aur res is jo hum user ko bhej raheh hain
 
     const { fullName, email, password } = req.body;
-
+    
     // abhumne yaha check kara ki email exists karta h ki nahi
     // uske liye humne jo model banaya thah uska ek function use kiya findOne({})
     // jo ki ek object leta hain aur phir database meh check karta hain ki exists karta ki nahi
@@ -54,7 +56,8 @@ async function registerUser(req, res) {
 
 async function loginUser(req,res){
     const {email, password} = req.body;
-
+    console.log(req.body);
+    
     const user = await userModel.findOne({
         email
     })
@@ -100,8 +103,9 @@ function logoutUser(req,res){
 }
 
 
+// Food Partner controllers
 async function registerFoodPartner(req, res) {
-    const {fullName, email, password} = req.body;
+    const {fullName, businessName, contactNumber, address, email, password} = req.body;
     
     const isFoodPartnerAlreadyExists = await foodPartnerModel.findOne({
         email
@@ -118,6 +122,9 @@ async function registerFoodPartner(req, res) {
     const foodPartner = await foodPartnerModel.create({
         fullName,
         email,
+        address,
+        businessName,
+        contactNumber,
         password:hashedPassword
     })
 
@@ -133,6 +140,9 @@ async function registerFoodPartner(req, res) {
             id: foodPartner._id,
             fullName: foodPartner.fullName,
             email: foodPartner.email,
+            businessName: foodPartner.businessName,
+            contactNumber: foodPartner.contactNumber,
+            address: foodPartner.address
         }
     })
 }
