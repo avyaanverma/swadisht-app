@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router';
 import '../../App.css';
 import axios from 'axios';
+import { useAuth } from "../../context/AuthContext";
 
 export default function UserSignIn() {
 
   const navigate = useNavigate();
+  const { refresh } = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -15,7 +17,8 @@ export default function UserSignIn() {
         withCredentials: true
       });
       console.log(res);
-      navigate("/");
+      await refresh();
+      navigate("/stores");
     } catch (err) {
       if (err.response) {
         console.log('Backend error:', err.response.data);

@@ -18,5 +18,10 @@ router.post(
 // GET /api/reels [public] - Customers/public can watch reels
 router.get("/", foodReelController.getReels);
 
-module.exports = router;
+// GET /api/reels/me [protected] - Food partner's reels
+router.get("/me", authMiddleware.authFoodPartnerMiddleware, foodReelController.getMyReels);
 
+// DELETE /api/reels/:id [protected] - Delete own reel
+router.delete("/:id", authMiddleware.authFoodPartnerMiddleware, foodReelController.deleteReel);
+
+module.exports = router;

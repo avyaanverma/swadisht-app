@@ -1,8 +1,10 @@
 import '../../App.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
+import { useAuth } from "../../context/AuthContext";
 export default function PartnerSignIn() {
   const navigate = useNavigate();
+  const { refresh } = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -14,6 +16,7 @@ export default function PartnerSignIn() {
       });
       console.log(res.data.user["id"]);
       const id = res.data.user["id"]
+      await refresh();
       navigate(`/store/${id}`);
     } catch (err) {
       if (err.response) {

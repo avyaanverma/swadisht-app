@@ -41,5 +41,27 @@ async function getFoodItems(req, res) {
 module.exports = {
   createFoodItem,
   getFoodItems,
-};
+  async getMyFoodItems(req, res) {
+    const foodItems = await foodItemModel
+      .find({ foodPartner: req.foodPartner._id })
+      .sort({ createdAt: -1 });
 
+    return res.status(200).json({
+      message: "Your food items fetched successfully.",
+      foodItems,
+    });
+  },
+  async deleteFoodItem(req, res) {
+    const { id } = req.params;
+    const foodItem = await foodItemModel.findOneAndDelete({
+      _id: id,
+      foodPartner: req.foodPartner._id,
+    });
+
+    if (!foodItem) {
+      return res.status(404).json({ message: "Food item not found." });
+    }
+
+    return res.status(200).json({ message: "Food item deleted.", foodItem });
+  },
+};

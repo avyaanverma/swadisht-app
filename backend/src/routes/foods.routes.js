@@ -10,5 +10,10 @@ router.post("/", authMiddleware.authFoodPartnerMiddleware, foodItemController.cr
 // GET /api/foods [public] - Browse menu items (optionally filter by foodPartner)
 router.get("/", foodItemController.getFoodItems);
 
-module.exports = router;
+// GET /api/foods/me [protected] - Food partner's menu items
+router.get("/me", authMiddleware.authFoodPartnerMiddleware, foodItemController.getMyFoodItems);
 
+// DELETE /api/foods/:id [protected] - Delete own menu item
+router.delete("/:id", authMiddleware.authFoodPartnerMiddleware, foodItemController.deleteFoodItem);
+
+module.exports = router;

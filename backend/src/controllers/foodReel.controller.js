@@ -27,8 +27,12 @@ async function createReel(req, res) {
 }
 
 async function getReels(req, res) {
+  const { foodPartner } = req.query || {};
+  const query = {};
+  if (foodPartner) query.foodPartner = foodPartner;
+
   const reels = await foodReelModel
-    .find({})
+    .find(query)
     .populate("foodPartner", "businessName fullName address")
     .sort({ createdAt: -1 });
 
@@ -41,5 +45,27 @@ async function getReels(req, res) {
 module.exports = {
   createReel,
   getReels,
-};
+  async getMyReels(req, res) {
+    const reels = await foodReelModel
+      .find({ foodPartner: req.foodPartner._id })
+      .sort({ createdAt: -1 });
 
+    return res.status(200).json({
+      message: "Your reels fetched successfully.",
+      reels,
+    });
+  },
+  async deleteReel(req, res) {
+    const { id } = req.params;
+    const reel = await foodReelModel.findOneAndDelete({
+      _id: id,
+      foodPartner: req.foodPartner._id,
+    });
+
+    if (!reel) {
+      return res.status(404).json({ message: "Reel not found." });
+    }
+
+    return res.status(200).json({ message: "Reel deleted.", reel });
+  },
+};

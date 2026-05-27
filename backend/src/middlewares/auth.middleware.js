@@ -3,7 +3,6 @@ const  userModel = require("../models/user.model")
 const jwt  = require("jsonwebtoken")
 
 async function authFoodPartnerMiddleware(req, res, next){
-    // sabse pehleh hum token check karenge h ki nahi jo ki req ki cookies.token meh hoga
     const token = req.cookies.token
 
     if(!token){
@@ -13,13 +12,17 @@ async function authFoodPartnerMiddleware(req, res, next){
     }
 
     try{
-        // decode karne ke liye hum verifiy functon lenge jo token aur secret key usko decode krdega
-        // yaha se ek object return hoga
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-        const foodPartner = await foodPartnerModel.findById(decoded.id)
+        if (decoded.role && decoded.role !== "foodPartner") {
+            return res.status(403).json({ message: "Forbidden." })
+        }
 
-        // hum yeh likha karr ek naya attribute bana rhe hain request body mein
+        const foodPartner = await foodPartnerModel.findById(decoded.id)
+        if(!foodPartner){
+            return res.status(401).json({ message: "Invalid Token." })
+        }
+
         req.foodPartner = foodPartner
         
         next()
@@ -43,7 +46,14 @@ async function authUserMiddleware(req,res,next){
     try{
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
+        if (decoded.role && decoded.role !== "user") {
+            return res.status(403).json({ message: "Forbidden." })
+        }
+
         const user = await userModel.findById(decoded.id)
+        if(!user){
+            return res.status(401).json({ message: "Invalid Token." })
+        }
 
         req.user = user
 
@@ -52,7 +62,7 @@ async function authUserMiddleware(req,res,next){
 
     }catch(err){
         return res.status(400).json({
-            message: err
+            message: "Invalid Token."
         })
     }
 }

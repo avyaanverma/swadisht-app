@@ -9,6 +9,7 @@ const foodRoutes = require('./routes/food.routes')
 const reelsRoutes = require("./routes/reels.routes")
 const foodsRoutes = require("./routes/foods.routes")
 const foodPartnerRoutes = require("./routes/foodPartner.routes")
+const cartRoutes = require("./routes/cart.routes")
 
 
 const app = express();
@@ -31,5 +32,6 @@ app.use("/api/food", foodRoutes)
 app.use("/api/reels", reelsRoutes)
 app.use("/api/foods", foodsRoutes)
 app.use('/api/food-partner', foodPartnerRoutes)
+app.use("/api/cart", cartRoutes)
 
 module.exports = app

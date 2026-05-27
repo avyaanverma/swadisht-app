@@ -36,10 +36,13 @@ async function registerUser(req, res) {
     })
 
     // ab is point prr hamara user bann chukka hain toh hum token bana raheh hain taaki hum yeh bata paaye ki jo requests aari hain woh authenticated h ki nahi
-    const token = jwt.sign({
-        // yaha prr humne _id isliye liya h coz database _id khudse add krta h 
-        id: user._id,
-    }, process.env.JWT_SECRET)
+    const token = jwt.sign(
+        {
+            id: user._id,
+            role: "user",
+        },
+        process.env.JWT_SECRET
+    )
     
     res.cookie("token", token)
     
@@ -69,7 +72,7 @@ async function loginUser(req,res){
         })
     }
 
-    const checkPassword = bcrypt.compare(password, user.password)
+    const checkPassword = await bcrypt.compare(password, user.password)
 
     if(!checkPassword){
         return res.status(400).json({
@@ -77,9 +80,13 @@ async function loginUser(req,res){
         })
     }
 
-    const token = jwt.sign({
-        id : user._id
-    },  process.env.JWT_SECRET)
+    const token = jwt.sign(
+        {
+            id: user._id,
+            role: "user",
+        },
+        process.env.JWT_SECRET
+    )
 
     res.cookie("token", token)
 
@@ -134,9 +141,13 @@ async function registerFoodPartner(req, res) {
                 .filter(Boolean)
     })
 
-    const token = jwt.sign({
-        id: foodPartner._id,
-    }, process.env.JWT_SECRET)
+    const token = jwt.sign(
+        {
+            id: foodPartner._id,
+            role: "foodPartner",
+        },
+        process.env.JWT_SECRET
+    )
 
     res.cookie("token", token)
 
@@ -167,7 +178,7 @@ async function loginFoodPartner(req,res){
         })
     }
 
-    const checkPassword = bcrypt.compare(password, foodPartner.password)
+    const checkPassword = await bcrypt.compare(password, foodPartner.password)
 
     if(!checkPassword){
         return res.status(400).json({
@@ -175,9 +186,13 @@ async function loginFoodPartner(req,res){
         })
     }
 
-    const token = jwt.sign({
-        id: foodPartner._id
-    }, process.env.JWT_SECRET)
+    const token = jwt.sign(
+        {
+            id: foodPartner._id,
+            role: "foodPartner",
+        },
+        process.env.JWT_SECRET
+    )
 
     res.cookie("token", token)
 
@@ -204,5 +219,73 @@ module.exports = {
     logoutUser,
     registerFoodPartner,
     loginFoodPartner,
-    logoutFoodPartner
+    logoutFoodPartner,
+    async me(req, res) {
+        const token = req.cookies.token;
+        if (!token) return res.status(200).json({ authenticated: false });
+
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+            if (decoded.role === "user") {
+                const user = await userModel.findById(decoded.id).select("fullName email");
+                if (!user) return res.status(200).json({ authenticated: false });
+                return res.status(200).json({
+                    authenticated: true,
+                    role: "user",
+                    user: { id: user._id, fullName: user.fullName, email: user.email },
+                });
+            }
+
+            if (decoded.role === "foodPartner") {
+                const foodPartner = await foodPartnerModel
+                    .findById(decoded.id)
+                    .select("fullName email businessName address tags");
+                if (!foodPartner) return res.status(200).json({ authenticated: false });
+                return res.status(200).json({
+                    authenticated: true,
+                    role: "foodPartner",
+                    user: {
+                        id: foodPartner._id,
+                        fullName: foodPartner.fullName,
+                        email: foodPartner.email,
+                        businessName: foodPartner.businessName,
+                        address: foodPartner.address,
+                        tags: foodPartner.tags,
+                    },
+                });
+            }
+
+            // Backward-compat: tokens without role
+            const user = await userModel.findById(decoded.id).select("fullName email");
+            if (user) {
+                return res.status(200).json({
+                    authenticated: true,
+                    role: "user",
+                    user: { id: user._id, fullName: user.fullName, email: user.email },
+                });
+            }
+            const foodPartner = await foodPartnerModel
+                .findById(decoded.id)
+                .select("fullName email businessName address tags");
+            if (foodPartner) {
+                return res.status(200).json({
+                    authenticated: true,
+                    role: "foodPartner",
+                    user: {
+                        id: foodPartner._id,
+                        fullName: foodPartner.fullName,
+                        email: foodPartner.email,
+                        businessName: foodPartner.businessName,
+                        address: foodPartner.address,
+                        tags: foodPartner.tags,
+                    },
+                });
+            }
+
+            return res.status(200).json({ authenticated: false });
+        } catch (err) {
+            return res.status(200).json({ authenticated: false });
+        }
+    },
 }
