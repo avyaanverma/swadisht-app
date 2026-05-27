@@ -27,7 +27,6 @@ app.get('/' ,(req,res)=>{
 })
 
 app.use('/api/auth' , authRoutes)
-// Backward-compat: old /api/food was used for reels earlier
 app.use("/api/food", foodRoutes)
 app.use("/api/reels", reelsRoutes)
 app.use("/api/foods", foodsRoutes)

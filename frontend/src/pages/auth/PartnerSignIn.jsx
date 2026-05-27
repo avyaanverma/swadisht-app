@@ -1,6 +1,6 @@
 import '../../App.css';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 export default function PartnerSignIn() {
   const navigate = useNavigate();
   const handleSubmit = async (e) => {

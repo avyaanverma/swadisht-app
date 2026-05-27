@@ -1,7 +1,6 @@
-import { Navigate } from 'react-router-dom';
 import '../../App.css';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 export default function UserRegister() {
   const navigate = useNavigate();

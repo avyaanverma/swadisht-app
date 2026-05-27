@@ -1,0 +1,149 @@
+.stores {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.stores__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.stores__title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.stores__search {
+  flex: 1;
+  min-width: 220px;
+  max-width: 520px;
+}
+
+.stores__searchInput {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  outline: none;
+  font-size: 1rem;
+}
+
+.stores__searchInput:focus {
+  border-color: rgba(255, 107, 107, 0.6);
+  box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.12);
+}
+
+.stores__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.stores__tagsEmpty {
+  color: #777;
+  font-size: 0.95rem;
+}
+
+.tag {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fff;
+  color: #333;
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.tag--active {
+  border-color: rgba(255, 107, 107, 0.55);
+  background: rgba(255, 107, 107, 0.12);
+}
+
+.stores__state {
+  color: #666;
+  padding: 24px 0;
+}
+
+.stores__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+.card__cover {
+  height: 100px;
+  background: linear-gradient(135deg, #ff6b6b, #ff9e6b);
+  position: relative;
+}
+
+.card__logo {
+  position: absolute;
+  left: 14px;
+  bottom: -18px;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.95);
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  color: #111;
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.10);
+}
+
+.card__body {
+  padding: 26px 14px 14px;
+}
+
+.card__name {
+  font-weight: 800;
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+
+.card__desc {
+  color: #666;
+  font-size: 0.92rem;
+  line-height: 1.25rem;
+  min-height: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.card__tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card__tag {
+  font-size: 0.78rem;
+  color: #444;
+  background: rgba(0, 0, 0, 0.04);
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+

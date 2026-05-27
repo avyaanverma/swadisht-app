@@ -191,13 +191,17 @@
   overflow: hidden;
 }
 
-.video-thumbnail img {
+.video-media {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.video-thumbnail video.video-media {
+  background: #000;
 }
 
 .play-overlay {
@@ -212,6 +216,7 @@
   align-items: center;
   opacity: 0;
   transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .video-card:hover .play-overlay {

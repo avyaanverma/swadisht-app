@@ -105,7 +105,7 @@ function logoutUser(req,res){
 
 // Food Partner controllers
 async function registerFoodPartner(req, res) {
-    const {fullName, businessName, contactNumber, address, email, password} = req.body;
+    const {fullName, businessName, contactNumber, address, email, password, tags} = req.body;
     
     const isFoodPartnerAlreadyExists = await foodPartnerModel.findOne({
         email
@@ -125,7 +125,13 @@ async function registerFoodPartner(req, res) {
         address,
         businessName,
         contactNumber,
-        password:hashedPassword
+        password:hashedPassword,
+        tags: Array.isArray(tags)
+            ? tags.map((t) => String(t).trim().toLowerCase()).filter(Boolean)
+            : String(tags || "")
+                .split(",")
+                .map((t) => t.trim().toLowerCase())
+                .filter(Boolean)
     })
 
     const token = jwt.sign({
@@ -142,7 +148,8 @@ async function registerFoodPartner(req, res) {
             email: foodPartner.email,
             businessName: foodPartner.businessName,
             contactNumber: foodPartner.contactNumber,
-            address: foodPartner.address
+            address: foodPartner.address,
+            tags: foodPartner.tags
         }
     })
 }

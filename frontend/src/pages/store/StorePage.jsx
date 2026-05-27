@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router';
 import axios from 'axios';
 import './StorePage.css';
 
@@ -8,7 +8,8 @@ export default function StorePage() {
   const navigate = useNavigate();
   const [storeData, setStoreData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isFoodPartner, setIsFoodPartner] = useState(true); // Assume user is food partner for UI demo
+  const isFoodPartner = true; // TODO: wire real auth/role
+  const API_BASE_URL = "http://localhost:3000";
 
   useEffect(() => {
     fetchStoreData();
@@ -17,21 +18,25 @@ export default function StorePage() {
   const fetchStoreData = async () => {
     try {
       setLoading(true);
-      // Replace with your actual backend endpoint
-      const response = await axios.get(`http://localhost:3000/api/store/${storeId}`);
-      setStoreData(response.data);
+      const response = await axios.get(`${API_BASE_URL}/api/food-partner/${storeId}`);
+      const { foodPartner, reels, foodItems } = response.data || {};
+      setStoreData({
+        ...foodPartner,
+        reels: reels || [],
+        foodItems: foodItems || [],
+      });
     } catch (error) {
       console.error('Error fetching store data:', error);
       // Fallback demo data
       setStoreData({
-        id: storeId,
+        _id: storeId,
         businessName: "Spice Junction",
         address: "123 Food Street, Mumbai",
         totalMeals: 43,
         customersServed: "15K",
         rating: 4.7,
         category: "Indian Cuisine",
-        videos: [
+        reels: [
           { id: 1, thumbnail: "https://via.placeholder.com/150x200?text=Video+1", views: "1.2K", likes: 245 },
           { id: 2, thumbnail: "https://via.placeholder.com/150x200?text=Video+2", views: "2.4K", likes: 512 },
           { id: 3, thumbnail: "https://via.placeholder.com/150x200?text=Video+3", views: "3.1K", likes: 789 },
@@ -44,7 +49,7 @@ export default function StorePage() {
   };
 
   const handleUploadClick = () => {
-    navigate('/create-food');
+    navigate('/partner/upload');
   };
 
   if (loading) {
@@ -76,7 +81,7 @@ export default function StorePage() {
           <div className="store-info">
             <div className="business-name">{storeData.businessName}</div>
             <div className="store-address">{storeData.address}</div>
-            <div className="store-category">{storeData.category}</div>
+            <div className="store-category">{storeData.category || "Food Partner"}</div>
             <div className="store-rating">
               <span className="rating-stars">★★★★★</span>
               <span className="rating-value">{storeData.rating}</span>
@@ -111,16 +116,35 @@ export default function StorePage() {
       <div className="videos-section">
         <h2 className="section-title">Food Videos</h2>
         <div className="videos-grid">
-          {storeData.videos.map((video) => (
-            <div key={video.id} className="video-card">
+          {(storeData.reels || storeData.videos || []).map((reel) => (
+            <div key={reel._id || reel.id} className="video-card">
               <div className="video-thumbnail">
-                <img src={video.thumbnail} alt={`Video ${video.id}`} />
+                {reel.videoUrl ? (
+                  <video
+                    className="video-media"
+                    src={reel.videoUrl}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    onClick={(e) =>
+                      e.currentTarget.paused ? e.currentTarget.play() : e.currentTarget.pause()
+                    }
+                  />
+                ) : (
+                  <img className="video-media" src={reel.thumbnail} alt={`Video ${reel.id}`} />
+                )}
                 <div className="play-overlay">
                   <div className="play-icon">▶</div>
                 </div>
                 <div className="video-stats">
-                  <span className="stat">👁️ {video.views}</span>
-                  <span className="stat">❤️ {video.likes}</span>
+                  {reel.title ? (
+                    <span className="stat">{reel.title}</span>
+                  ) : (
+                    <>
+                      <span className="stat">👁️ {reel.views}</span>
+                      <span className="stat">❤️ {reel.likes}</span>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

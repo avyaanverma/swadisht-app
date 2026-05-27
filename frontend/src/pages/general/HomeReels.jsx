@@ -1,56 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import axios from 'axios';
-          // { 
-          //   id: 1, 
-          //   src: 'https://ik.imagekit.io/iwlmr9llj/98a00570-3aca-467d-be4f-298eb40ca6b1_LWMNKHbwe', 
-          //   desc: 'Delicious biryani from a nearby partner — try the signature spice mix!', 
-          //   storeId: 'store1',
-          //   likes: 124,
-          //   comments: 23,
-          //   saved: 56,
-          //   user: 'Biryani Hub'
-          // },
-          // { 
-          //   id: 2, 
-          //   src: 'https://ik.imagekit.io/iwlmr9llj/98a00570-3aca-467d-be4f-298eb40ca6b1_LWMNKHbwe', 
-          //   desc: 'Fresh smoothies made to order, seasonal fruits and zero sugar options.', 
-          //   storeId: 'store2',
-          //   likes: 89,
-          //   comments: 12,
-          //   saved: 34,
-          //   user: 'Smoothie Palace'
-          // },
-          // { 
-          //   id: 3, 
-          //   src: 'https://ik.imagekit.io/iwlmr9llj/98a00570-3aca-467d-be4f-298eb40ca6b1_LWMNKHbwe', 
-          //   desc: 'Late night tacos — crispy shells, juicy fillings, and amazing salsa.', 
-          //   storeId: 'store3',
-          //   likes: 215,
-          //   comments: 45,
-          //   saved: 78,
-          //   user: 'Taco Nights'
-          // },
-          // { 
-          //   id: 4, 
-          //   src: 'https://ik.imagekit.io/iwlmr9llj/98a00570-3aca-467d-be4f-298eb40ca6b1_LWMNKHbwe', 
-          //   desc: 'Wood-fired pizzas with fresh ingredients and homemade dough.', 
-          //   storeId: 'store4',
-          //   likes: 312,
-          //   comments: 67,
-          //   saved: 102,
-          //   user: 'Pizza Heaven'
-          // },
-          // { 
-          //   id: 5, 
-          //   src:'https://ik.imagekit.io/iwlmr9llj/98a00570-3aca-467d-be4f-298eb40ca6b1_LWMNKHbwe', 
-          //   desc: 'Healthy salads with organic vegetables and premium dressings.', 
-          //   storeId: 'store5',
-          //   likes: 178,
-          //   comments: 34,
-          //   saved: 89,
-          //   user: 'Green Garden'
-          // },
+
 export default function HomeReels() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -79,12 +30,10 @@ export default function HomeReels() {
   const fetchVideos = async () => {
     try {
       setLoading(true);
-      const videos = await axios.get("http://localhost:3000/api/food/", {
-        withCredentials: true
-      })
+      const videos = await axios.get("http://localhost:3000/api/reels/")
       setTimeout(() => {
-        setVideos(videos.data.foodItems);
-        console.log(videos.data.foodItems);
+        setVideos(videos.data.reels);
+        console.log(videos.data.reels);
         setLoading(false);
       }, 1000);
     } catch (error) {
@@ -134,7 +83,8 @@ export default function HomeReels() {
 
   const handleVisitStore = (storeId, e) => {
     e.stopPropagation();
-    navigate(`/store/:${storeId}`)
+    if (!storeId) return;
+    navigate(`/store/${storeId}`);
   };
 
   // Handle scroll events for changing active video
@@ -207,23 +157,23 @@ export default function HomeReels() {
           <video 
             ref={el => videoRefs.current[index] = el}
             className="reel-video" 
-            src={v.video} 
+            src={v.videoUrl} 
             playsInline 
             muted 
             loop 
             preload="auto"
           />
-          {console.log(v.video)}
+          {console.log(v.videoUrl)}
           {/* Video overlay with user info and description */}
           <div className="reel-overlay">
             <div className="user-info">
               <div className="user-avatar">🍔</div>
-              <div className="user-name">{v.name}</div>
+              <div className="user-name">{v.foodPartner?.businessName || v.title}</div>
             </div>
             <div className="reel-desc">{v.description}</div>
             <button 
               className="visit-store-btn" 
-              onClick={(e) => handleVisitStore(v._id, e)}
+              onClick={(e) => handleVisitStore(v.foodPartner._id, e)}
             >
               Visit Store
             </button>

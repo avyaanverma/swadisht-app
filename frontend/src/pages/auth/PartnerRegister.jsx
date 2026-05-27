@@ -1,5 +1,5 @@
 import '../../App.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import axios from 'axios';
 
 export default function PartnerRegister() {
@@ -13,12 +13,13 @@ export default function PartnerRegister() {
               contactNumber: e.target.contactNumber.value,
               address: e.target.address.value,
               email: e.target.email.value,
-              password: e.target.password.value
+              password: e.target.password.value,
+              tags: e.target.tags.value
           },{
             withCredentials: true
           })
           console.log(response.data);
-          navigate("/create-food")
+          navigate("/partner/upload")
 
       }catch (error) {
     if (error.response) {
@@ -46,6 +47,7 @@ export default function PartnerRegister() {
           <input name = "email" type="email" placeholder="Business Email" className="auth-input" required />
           <input name = "contactNumber" type="tel" placeholder="Contact Number" className="auth-input" pattern="[0-9]{10,}" required />
           <input name = "address" type="text" placeholder="Restaurant Address" className="auth-input" required />
+          <input name="tags" type="text" placeholder="Tags (comma separated) e.g. indian, chinese, veg" className="auth-input" />
           <input name = "password" type="password" placeholder="Password" className="auth-input" required />
           <button className="auth-btn" type=" " style={{ marginTop: '0.5rem', fontWeight: 600, fontSize: '1.08rem', letterSpacing: '0.01em' }}>
             Register

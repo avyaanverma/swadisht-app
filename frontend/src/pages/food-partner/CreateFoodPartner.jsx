@@ -67,7 +67,7 @@ export default function CreateFoodPartner() {
       formData.append('description', description);
       
       // Replace with your actual backend endpoint
-      const response = await axios.post('http://localhost:3000/api/food', formData, {
+      const response = await axios.post('http://localhost:3000/api/reels', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
